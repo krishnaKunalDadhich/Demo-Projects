@@ -1,0 +1,12 @@
+export const uid = (prefix='id') => `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+export const todayISO = () => new Date().toISOString().slice(0,10);
+export const formatDate = (value, options={day:'numeric',month:'short',year:'numeric'}) => { if(!value) return '—'; const d=new Date(`${value}T00:00:00`); return Number.isNaN(d.getTime())?'Invalid date':d.toLocaleDateString('en-IN',options); };
+export const formatDateTime = (date) => new Date(date).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
+export const escapeHTML = (value='') => String(value).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+export const debounce = (fn, wait=250) => { let timer; return (...args)=>{ clearTimeout(timer); timer=setTimeout(()=>fn(...args),wait); }; };
+export const clamp = (n,min,max) => Math.min(max,Math.max(min,n));
+export const minutesToLabel = (mins=0) => `${Math.floor(mins/60)}h ${mins%60}m`;
+export const daysBetween = (a,b) => Math.round((new Date(`${b}T00:00:00`)-new Date(`${a}T00:00:00`))/86400000);
+export const isOverdue = task => task.status !== 'Completed' && task.dueDate < todayISO();
+export const priorityRank = {Urgent:4,High:3,Medium:2,Low:1};
+export const titleCase = s => s.replace(/\w\S*/g, w=>w[0].toUpperCase()+w.slice(1).toLowerCase());

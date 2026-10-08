@@ -1,0 +1,1 @@
+body.dark{--bg:#0d1118;--surface:#151b25;--surface-2:#1b2330;--text:#edf2f7;--muted:#94a0b2;--border:#273142;--shadow:0 8px 30px rgba(0,0,0,.2)}body.dark .topbar{background:rgba(13,17,24,.92)}body.dark .hero{background:#090d14}body.dark .day-cell{background:var(--surface)}

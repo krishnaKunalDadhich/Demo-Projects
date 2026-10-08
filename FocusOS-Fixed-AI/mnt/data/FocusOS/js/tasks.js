@@ -1,0 +1,10 @@
+import { getState, updateState } from './state.js';
+import { saveState } from './storage.js';
+import { uid, todayISO, isOverdue, priorityRank } from './utils.js';
+export const addTask = task => { updateState(s=>({...s,tasks:[...s.tasks,{...task,id:uid('task')}]})); return persist(); };
+export const updateTask = (id,patch) => { updateState(s=>({...s,tasks:s.tasks.map(t=>t.id===id?{...t,...patch}:t)})); return persist(); };
+export const deleteTask = id => { updateState(s=>({...s,tasks:s.tasks.filter(t=>t.id!==id)})); return persist(); };
+export const toggleTask = id => updateTask(id,{status:getState().tasks.find(t=>t.id===id)?.status==='Completed'?'Pending':'Completed'});
+export const filterTasks = ({query='',status='All',priority='All',sort='due'}) => { const q=query.trim().toLowerCase(); let items=getState().tasks.filter(t=>{ const hay=[t.title,t.category,t.priority,t.status,t.subjectId].join(' ').toLowerCase(); const statusOk=status==='All'||(status==='Overdue'?isOverdue(t):t.status===status); return (!q||hay.includes(q))&&statusOk&&(priority==='All'||t.priority===priority); }); return items.sort((a,b)=>{ if(sort==='priority') return priorityRank[b.priority]-priorityRank[a.priority]; if(sort==='title') return a.title.localeCompare(b.title); return a.dueDate.localeCompare(b.dueDate); }); };
+export const taskStats = () => { const tasks=getState().tasks; return {total:tasks.length,completed:tasks.filter(t=>t.status==='Completed').length,pending:tasks.filter(t=>t.status!=='Completed').length,overdue:tasks.filter(isOverdue).length,todayCompleted:tasks.filter(t=>t.status==='Completed'&&t.dueDate===todayISO()).length}; };
+const persist=()=>saveState(getState());
